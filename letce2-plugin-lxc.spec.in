@@ -1,0 +1,121 @@
+%define with_python3 %{?_without_python3:0} %{?!_without_python3:1}
+
+Summary: letce2 LXC experiment plugin
+Name:  letce2-plugin-lxc
+Version: @VERSION@
+Release: 1%{?dist}
+License: BSD
+Group: Development/Libraries
+URL: https://github.com/adjacentlink/letce2-plugin-lxc
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Vendor: Adjacent Link LLC
+BuildArch: noarch
+
+%if 0%{?fedora} < 26
+%define with_python3 0
+%endif
+
+%if 0%{?fedora} >= 26
+%define use_python2_sitelib %{python2_sitelib}
+%else
+%define use_python2_sitelib %{python_sitelib}
+%endif
+
+%global _description \
+Lightweight Experiment Template Configuration Environment LXC plugin \
+providing container configuration and node templates along with start \
+and stop commands to execute experiments.
+
+%description %{_description}
+
+%package -n python2-%{name}
+Summary: %{summary}
+%{?python_provide:%python_provide python2-%{name}}
+Requires: bash
+Requires: bridge-utils
+Requires: ethtool
+Requires: lxc
+Requires: iptables
+Requires: openssh-server
+Requires: sudo
+Requires: procps-ng
+Requires: python2-letce2
+%if 0%{?fedora} >= 26
+BuildRequires: python2-devel
+Requires: python2-setuptools
+%define use_python2_sitelib %{python2_sitelib}
+%else
+BuildRequires: python-devel
+Requires: python-setuptools
+%define use_python2_sitelib %{python_sitelib}
+%endif
+%description -n python2-%{name} %{_description}
+
+%if %{with_python3}
+%package -n python3-%{name}
+Summary: %{summary}
+%{?python_provide:%python_provide python3-%{name}}
+BuildRequires: python3-devel
+Requires: bash
+Requires: bridge-utils
+Requires: ethtool
+Requires: lxc
+Requires: iptables
+Requires: openssh-server
+Requires: sudo
+Requires: procps-ng
+Requires: python3-setuptools
+Requires: python3-letce2
+%description -n python3-%{name} %{_description}
+%endif
+
+%prep
+%setup -q
+
+%build
+%configure
+
+%install
+%if %{with_python3}
+make  DESTDIR=${RPM_BUILD_ROOT} PYTHON=%{__python3} install
+%endif
+
+make  DESTDIR=${RPM_BUILD_ROOT} PYTHON=%{__python2} install
+
+find ${RPM_BUILD_ROOT} -name '*.a' -exec rm '{}'  \;
+find ${RPM_BUILD_ROOT} -name '*.la' -exec rm '{}' \;
+mkdir -p ${RPM_BUILD_ROOT}%{_pkgdocdir}
+install -t ${RPM_BUILD_ROOT}%{_pkgdocdir} AUTHORS %{!?_licensedir:COPYING} ChangeLog NEWS README 
+%if 0%{?_licensedir:1}
+mkdir -p ${RPM_BUILD_ROOT}%{_licensedir}/%{name}
+install -t ${RPM_BUILD_ROOT}%{_licensedir}/%{name} COPYING
+%endif
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+
+%postun
+
+%files -n python2-%{name}
+%defattr(-,root,root,-)
+%{use_python2_sitelib}/*
+%doc %{_pkgdocdir}
+%if 0%{?_licensedir:1}
+%dir %{_licensedir}/%{name}
+%license %{_licensedir}/%{name}/COPYING
+%endif
+
+%if %{with_python3}
+%files -n python3-%{name}
+%defattr(-,root,root,-)
+%{python3_sitelib}/*
+%doc %{_pkgdocdir}
+%if 0%{?_licensedir:1}
+%dir %{_licensedir}/%{name}
+%license %{_licensedir}/%{name}/COPYING
+%endif
+%endif
+

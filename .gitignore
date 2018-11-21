@@ -1,0 +1,16 @@
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+build
+config.log
+config.status
+configure
+install-sh
+missing
+setup.py
+
+letce2-plugin-lxc-*.tar.gz
+
+.rpmbuild
+letce2-plugin-lxc.spec

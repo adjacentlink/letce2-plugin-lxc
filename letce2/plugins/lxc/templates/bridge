@@ -1,0 +1,93 @@
+#!/bin/bash -
+<%
+import re
+from collections import defaultdict
+bridges = defaultdict(set)
+for node,items in __share.items():
+    for item in items:
+        m = re.match(r'lxc\.interface.(\d+)\.link',item)
+        if m:
+           bridges[items[item]].add('aveth.{}.{}'.format(__node_index[node],int(m.group(1))))
+
+host_bridges=defaultdict(dict)
+for key in context.keys():
+    m = re.match(r'bridge.(\d+)\.(.+)',key)
+        
+    if m:
+       host_bridges[int(m.group(1))][m.group(2)] = context[key]
+
+bridge_addrs = {}
+for bridge in host_bridges:
+    if 'name' in host_bridges[bridge]:
+        if 'ipv4' in host_bridges[bridge]:
+           bridge_addrs[host_bridges[bridge]['name']] = host_bridges[bridge]['ipv4']
+
+bridge_links = {}
+for bridge in host_bridges:
+    if 'name' in host_bridges[bridge]:
+       if 'link' in host_bridges[bridge]:
+           bridge_links[host_bridges[bridge]['name']] = host_bridges[bridge]['link']
+%>
+
+wait_for_device()
+{
+    local device=$1
+    local timeout=$2
+    local waited=0
+
+    echo "${__node_name}: waiting for $device"
+
+    while(! ip link show | grep -q $device); do
+
+        if [ $waited -lt $timeout ]; then
+            sleep 1
+            waited=$(($waited + 1))
+        else
+            echo "${__node_name}: $device not found [!!]"
+            return 1
+        fi
+    done
+
+    echo "${__node_name}: $device found"
+    return 0
+}
+
+case "$1" in
+    start)
+% for bridge in bridges:
+         brctl addbr ${bridge}
+         wait_for_device ${bridge} 10
+         ip link set ${bridge} up
+         sleep 1
+         % if bridge in bridge_addrs:
+         ip addr add ${bridge_addrs[bridge]} dev ${bridge}
+         % endif
+         % if bridge in bridge_links:
+         brctl addif ${bridge} ${bridge_links[bridge]}
+         % endif
+         iptables -I INPUT -i ${bridge} -j ACCEPT
+         iptables -I FORWARD -i ${bridge} -j ACCEPT
+         ethtool --offload  ${bridge} rx off tx off
+         echo 0 > /sys/devices/virtual/net/${bridge}/bridge/multicast_snooping
+         
+% endfor
+         ;;
+
+    prep)
+         ;;
+        
+    stop)
+% for bridge in bridges:
+         ip link set ${bridge} down
+         % if bridge in bridge_links:
+         brctl delif ${bridge} ${bridge_links[bridge]}
+         % endif
+         brctl delbr ${bridge}
+         iptables -D INPUT -i ${bridge} -j ACCEPT
+         iptables -D FORWARD -i ${bridge} -j ACCEPT
+%        for veth in bridges[bridge]:
+         ip link del dev ${veth} &> /dev/null
+%        endfor         
+% endfor        
+         ;;
+esac
