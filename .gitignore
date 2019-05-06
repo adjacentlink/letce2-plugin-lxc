@@ -13,4 +13,5 @@ setup.py
 letce2-plugin-lxc-*.tar.gz
 
 .rpmbuild
+.debbuild
 letce2-plugin-lxc.spec
