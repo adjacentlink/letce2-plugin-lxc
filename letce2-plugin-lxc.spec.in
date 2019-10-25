@@ -18,6 +18,10 @@ BuildArch: noarch
 %define with_old_depends 1
 %endif
 
+%if %{?el8}
+%define with_python3 1
+%endif
+
 # Fedora (non-EOL)
 %if 0%{?fedora}
 %if %{fedora} < 31
