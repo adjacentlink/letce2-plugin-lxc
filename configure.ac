@@ -32,7 +32,7 @@
  See toplevel COPYING for more information.
 ])
 
-AC_INIT([letce2-plugin-lxc],0.2.2,[labs at adjacentlink dot com])
+AC_INIT([letce2-plugin-lxc],0.2.3,[labs at adjacentlink dot com])
 
 AC_CONFIG_SRCDIR([letce2])
 
