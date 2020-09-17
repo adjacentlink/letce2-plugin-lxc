@@ -36,6 +36,7 @@ import sys
 import os
 import subprocess
 import re
+import time
 
 from letce2.utils.filesystem import mkdir_p
 from letce2.interface.plugin import Plugin as PluginBase
@@ -180,12 +181,16 @@ class Plugin(PluginBase):
 
         mkdir_p('persist/host/var/tmp')
 
+        # RFC 2822
+        start_utc = time.strftime("%a, %d %b %Y %H:%M:%S +0000",
+                                  time.gmtime(time.time() + args['scenario_delay']))
+
         subprocess.call(['sudo',
                          'host/control',
                          'prestart',
                          os.getcwd(),
                          args['environment'],
-                         str(args['scenario_delay'])])
+                         start_utc])
 
         subprocess.call(['sudo',
                          'host/bridge',
@@ -219,7 +224,7 @@ class Plugin(PluginBase):
                               os.getcwd(),
                               node,
                               args['environment'],
-                              str(args['scenario_delay'])])
+                              start_utc])
 
         subprocess.call(['sudo',
                          'host/bridge',
@@ -230,7 +235,7 @@ class Plugin(PluginBase):
                          'start',
                          os.getcwd(),
                          args['environment'],
-                         str(args['scenario_delay'])])
+                         start_utc])
 
         # touch lock file
         subprocess.call(['sudo',
