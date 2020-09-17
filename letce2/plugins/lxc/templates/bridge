@@ -55,7 +55,7 @@ wait_for_device()
 case "$1" in
     start)
 % for bridge in bridges:
-         brctl addbr ${bridge}
+         ip link add ${bridge} type bridge
          wait_for_device ${bridge} 10
          ip link set ${bridge} up
          sleep 1
@@ -63,7 +63,7 @@ case "$1" in
          ip addr add ${bridge_addrs[bridge]} dev ${bridge}
          % endif
          % if bridge in bridge_links:
-         brctl addif ${bridge} ${bridge_links[bridge]}
+         ip link set dev ${bridge_links[bridge]} master ${bridge}
          % endif
          iptables -I INPUT -i ${bridge} -j ACCEPT
          iptables -I FORWARD -i ${bridge} -j ACCEPT
@@ -80,9 +80,9 @@ case "$1" in
 % for bridge in bridges:
          ip link set ${bridge} down
          % if bridge in bridge_links:
-         brctl delif ${bridge} ${bridge_links[bridge]}
+         ip link set dev ${bridge_links[bridge]} nomaster
          % endif
-         brctl delbr ${bridge}
+         ip link del ${bridge}
          iptables -D INPUT -i ${bridge} -j ACCEPT
          iptables -D FORWARD -i ${bridge} -j ACCEPT
 %        for veth in bridges[bridge]:

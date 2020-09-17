@@ -33,8 +33,7 @@
 action=$1
 top_dir=$2
 environment=$3
-delay_seconds=$4
-start=
+start_utc=$4
 
 # source in an environment if provided
 if [ -n "$environment" ]
@@ -42,21 +41,12 @@ then
     . "$environment"
 fi
 
-if [ -n "$delay_seconds" ]
-then
-    start=$(date -R --date "now + $delay_seconds sec")
-    utctime=$(date -R --date="$start" --utc)
-    start=$utctime
-fi
-
-utctime=$(date -R --date="$starttime" --utc)
-   
 case "$action" in
     prestart)
         # run a local prestart if provided
         if [ -f "$top_dir/host/prestart.local" ]
         then
-            bash "$top_dir/host/prestart.local" "$top_dir" "$start"
+            bash "$top_dir/host/prestart.local" "$top_dir" "$start_utc"
         fi
          ;;
 
@@ -64,7 +54,7 @@ case "$action" in
         # run a local start if provided
         if [ -f "$top_dir/host/start.local" ]
         then
-            bash "$top_dir/host/start.local" "$top_dir" "$start"
+            bash "$top_dir/host/start.local" "$top_dir" "$start_utc"
         fi
         ;;
 
@@ -72,7 +62,7 @@ case "$action" in
         # run a local post start if provided
         if [ -f "$top_dir/host/poststart.local" ]
         then
-            bash "$top_dir/host/poststart.local" "$top_dir" "$start"
+            bash "$top_dir/host/poststart.local" "$top_dir" "$start_utc"
         fi
         ;;
 
@@ -80,7 +70,7 @@ case "$action" in
       # run a local prestop if provided
         if [ -f "$top_dir/host/prestop.local" ]
         then
-            bash "$top_dir/host/prestop.local" "$top_dir" "$start"
+            bash "$top_dir/host/prestop.local" "$top_dir" "$start_utc"
         fi
          ;;
 
@@ -88,7 +78,7 @@ case "$action" in
          # run a local stop if provided
         if [ -f "$top_dir/host/stop.local" ]
         then
-            bash "$top_dir/host/stop.local" "$top_dir" "$start"
+            bash "$top_dir/host/stop.local" "$top_dir" "$start_utc"
         fi
         ;;
 

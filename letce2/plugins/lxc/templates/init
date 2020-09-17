@@ -49,7 +49,7 @@ export PATH=$PATH:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 top_dir=$1
 node=$2
 env=$3
-start=$4
+start_utc=$4
 
 # fix devpts
 mount /dev/pts -o remount,rw,mode=620,ptmxmode=666,gid=5
@@ -74,6 +74,6 @@ start_sshd $top_dir/persist/$node/var/run/ssh.pid
 # run a local init if provided
 if [ -f $top_dir/$node/init.local ]
 then
-    bash $top_dir/$node/init.local "$top_dir" "$node" "$start" \
+    bash $top_dir/$node/init.local "$top_dir" "$node" "$start_utc" \
        2>&1 | tee  $top_dir/persist/$node/var/log/init.log
 fi
