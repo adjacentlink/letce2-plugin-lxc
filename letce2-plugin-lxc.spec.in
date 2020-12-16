@@ -52,7 +52,7 @@ and stop commands to execute experiments.
 Summary: %{summary}
 %{?python_provide:%python_provide python2-%{name}}
 Requires: bash
-Requires: bridge-utils
+Requires: iproute
 Requires: ethtool
 Requires: lxc
 Requires: iptables
@@ -79,7 +79,7 @@ Summary: %{summary}
 %{?python_provide:%python_provide python3-%{name}}
 BuildRequires: python3-devel
 Requires: bash
-Requires: bridge-utils
+Requires: iproute
 Requires: ethtool
 Requires: lxc
 Requires: iptables
