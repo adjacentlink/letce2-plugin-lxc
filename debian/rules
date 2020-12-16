@@ -2,7 +2,7 @@
 # -*- makefile -*-
 export DH_OPTIONS
 
-PYTHON3_DEPENDS = -Vpython3:Depends="python3:any (>= 3.0), python3, bash, iproute, ethtool, lxc, iptables, openssh-server, sudo, procps, python3-letce2"
+PYTHON3_DEPENDS = -Vpython3:Depends="python3:any (>= 3.0), python3, bash, iproute2, ethtool, lxc, iptables, openssh-server, sudo, procps, python3-letce2"
 
 override_dh_gencontrol:
 	dh_gencontrol -- $(PYTHON3_DEPENDS)
