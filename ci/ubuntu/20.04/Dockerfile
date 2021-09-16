@@ -10,7 +10,8 @@ RUN apt-get -y upgrade --no-install-recommends
 # Copy and install packages from the latest upsteam dependencies
 WORKDIR /opt
 RUN mkdir -p dependencies
-# RUN dpkg -i dependencies/*; apt-get -y -f install
+COPY --from=gcr.io/automated-builds-303920/ubuntu20.04.letce2 /opt/built/* dependencies/
+RUN dpkg -i dependencies/*; apt-get -y -f install
 
 # Build tools
 RUN apt-get -y install git gcc g++ autoconf automake libtool dh-python debhelper pkg-config python3-setuptools

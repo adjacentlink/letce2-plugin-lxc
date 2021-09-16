@@ -7,7 +7,8 @@ RUN dnf -y update
 # Copy and install packages from the latest upsteam dependencies
 WORKDIR /opt
 RUN mkdir -p dependencies
-# RUN dnf -y install dependencies/*\.rpm
+COPY --from=gcr.io/automated-builds-303920/fedora33.letce2 /opt/built/* dependencies/
+RUN dnf -y install dependencies/*\.rpm
 
 # Build tools
 RUN dnf -y install git gcc-c++ make autoconf automake libtool rpm-build python3-devel

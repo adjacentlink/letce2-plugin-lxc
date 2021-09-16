@@ -8,7 +8,8 @@ RUN yum -y update
 # Copy and install packages from the latest upsteam dependencies
 WORKDIR /opt
 RUN mkdir -p dependencies
-# RUN yum -y install dependencies/*\.rpm
+COPY --from=gcr.io/automated-builds-303920/centos7.letce2 /opt/built/* dependencies/
+RUN yum -y install dependencies/*\.rpm
 
 # Build tools
 RUN yum -y install git gcc-c++ make autoconf automake libtool rpm-build python-devel python-setuptools

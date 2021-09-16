@@ -9,5 +9,5 @@ Homepage: https://github.com/adjacentlink/letce2-plugin-lxc
 Package: python3-letce2-plugin-lxc
 Section: python
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}
+Depends: ${python3:Depends}, ${misc:Depends}, python3-letce2
 Description: Lightweight Experiment Template Configuration Environment LXC Plugin
