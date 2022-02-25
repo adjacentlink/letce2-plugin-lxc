@@ -16,9 +16,7 @@ RUN yum -y install git gcc-c++ make autoconf automake libtool rpm-build python-d
 
 RUN git clone https://github.com/adjacentlink/letce2-plugin-lxc -b develop
 WORKDIR letce2-plugin-lxc
-RUN ./autogen.sh
-RUN ./configure
-RUN make rpm
+RUN ./autogen.sh && ./configure && make rpm
 RUN cp $(find .rpmbuild/RPMS -name "*\.rpm") /opt/built
 RUN yum -y install /opt/built/*
 
