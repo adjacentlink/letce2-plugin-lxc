@@ -1,8 +1,6 @@
 from setuptools import setup, Extension
 
 setup(name='letce2-plugin-lxc',
-      namespace_packages=['letce2',
-                          'letce2.plugins'],
       version='@VERSION@',
       description='Lightweight Experiment Test Control Environment 2 LXC PLugin',
       long_description='Lightweight Experiment Test Control Environment 2 LXC PLugin',

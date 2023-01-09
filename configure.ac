@@ -32,7 +32,7 @@
  See toplevel COPYING for more information.
 ])
 
-AC_INIT([letce2-plugin-lxc],0.2.8,[labs at adjacentlink dot com])
+AC_INIT([letce2-plugin-lxc],[0.2.8],[labs at adjacentlink dot com])
 
 AC_CONFIG_SRCDIR([letce2])
 
@@ -42,7 +42,7 @@ AM_INIT_AUTOMAKE([])
 
 AC_PROG_INSTALL
 
-AM_PATH_PYTHON([2.7])
+AM_PATH_PYTHON([3.6])
 
 LANG=C
 AC_SUBST(LANG)
@@ -77,6 +77,6 @@ AC_SUBST(DEBIAN_VERSION)
 
 AC_SUBST(DATE_RFC2822,`date -R`)
 
-AC_OUTPUT(
- Makefile
-)
+AC_CONFIG_FILES([Makefile
+])
+AC_OUTPUT
