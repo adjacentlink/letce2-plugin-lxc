@@ -256,10 +256,11 @@ class Plugin(PluginBase):
                          ''])
 
         for node in nodes:
-            subprocess.call(['sudo',
-                             'lxc-stop',
-                             '-n',
-                             node])
+            if node != 'host':
+                subprocess.call(['sudo',
+                                 'lxc-stop',
+                                 '-n',
+                                 node])
 
         subprocess.call(['sudo',
                          'host/bridge',
