@@ -65,8 +65,6 @@ case "$1" in
          % if bridge in bridge_links:
          ip link set dev ${bridge_links[bridge]} master ${bridge}
          % endif
-         iptables -I INPUT -i ${bridge} -j ACCEPT
-         iptables -I FORWARD -i ${bridge} -j ACCEPT
          ethtool --offload  ${bridge} rx off tx off
          echo 0 > /sys/devices/virtual/net/${bridge}/bridge/multicast_snooping
          
@@ -83,8 +81,6 @@ case "$1" in
          ip link set dev ${bridge_links[bridge]} nomaster
          % endif
          ip link del ${bridge}
-         iptables -D INPUT -i ${bridge} -j ACCEPT
-         iptables -D FORWARD -i ${bridge} -j ACCEPT
 %        for veth in bridges[bridge]:
          ip link del dev ${veth} &> /dev/null
 %        endfor         
