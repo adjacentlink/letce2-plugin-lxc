@@ -212,6 +212,7 @@ class Plugin(PluginBase):
             mkdir_p('persist/%s/var/tmp' % node)
 
             subprocess.Popen(['sudo',
+                              '-b',
                               'lxc-execute',
                               '-f',
                               '%s/lxc.conf' % node,
