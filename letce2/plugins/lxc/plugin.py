@@ -212,6 +212,7 @@ class Plugin(PluginBase):
             mkdir_p('persist/%s/var/tmp' % node)
 
             subprocess.Popen(['sudo',
+                              '-b',
                               'lxc-execute',
                               '-f',
                               '%s/lxc.conf' % node,
@@ -256,10 +257,11 @@ class Plugin(PluginBase):
                          ''])
 
         for node in nodes:
-            subprocess.call(['sudo',
-                             'lxc-stop',
-                             '-n',
-                             node])
+            if node != 'host':
+                subprocess.call(['sudo',
+                                 'lxc-stop',
+                                 '-n',
+                                 node])
 
         subprocess.call(['sudo',
                          'host/bridge',
